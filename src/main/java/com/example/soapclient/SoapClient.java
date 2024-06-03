@@ -1,14 +1,15 @@
 package com.example.soapclient;
 
-import com.example.soapclient.wsdl.Add;
-import com.example.soapclient.wsdl.AddResponse;
+import com.example.soapclient.wsdl.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.ws.client.core.WebServiceTemplate;
 import org.springframework.ws.soap.client.core.SoapActionCallback;
+import org.springframework.stereotype.Component;
 
 @Component
 public class SoapClient {
+
+    private static final String NAMESPACE_URI = "http://tempuri.org/";
 
     @Autowired
     private WebServiceTemplate webServiceTemplate;
@@ -18,18 +19,42 @@ public class SoapClient {
         request.setIntA(intA);
         request.setIntB(intB);
 
-        AddResponse response = (AddResponse) webServiceTemplate.marshalSendAndReceive(
-                "http://www.dneonline.com/calculator.asmx",
+        return (AddResponse) webServiceTemplate.marshalSendAndReceive(
                 request,
-                new SoapActionCallback("http://tempuri.org/Add")
+                new SoapActionCallback(NAMESPACE_URI + "Add")
         );
+    }
 
-        // Assert the response
-        assert response != null : "Response is null";
-        assert response.getAddResult() == (intA + intB) : "The addition result is incorrect";
+    public DivideResponse divide(int intA, int intB) {
+        Divide request = new Divide();
+        request.setIntA(intA);
+        request.setIntB(intB);
 
-        System.out.println("Response received: " + response.getAddResult());
+        return (DivideResponse) webServiceTemplate.marshalSendAndReceive(
+                request,
+                new SoapActionCallback(NAMESPACE_URI + "Divide")
+        );
+    }
 
-        return response;
+    public MultiplyResponse multiply(int intA, int intB) {
+        Multiply request = new Multiply();
+        request.setIntA(intA);
+        request.setIntB(intB);
+
+        return (MultiplyResponse) webServiceTemplate.marshalSendAndReceive(
+                request,
+                new SoapActionCallback(NAMESPACE_URI + "Multiply")
+        );
+    }
+
+    public SubtractResponse subtract(int intA, int intB) {
+        Subtract request = new Subtract();
+        request.setIntA(intA);
+        request.setIntB(intB);
+
+        return (SubtractResponse) webServiceTemplate.marshalSendAndReceive(
+                request,
+                new SoapActionCallback(NAMESPACE_URI + "Subtract")
+        );
     }
 }
